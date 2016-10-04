@@ -1,4 +1,5 @@
 import os
+import xml.etree.ElementTree as ET
 
 def reader(corpus_path):
     corpus_path, dirs, files = os.walk(corpus_path).next()
@@ -13,4 +14,43 @@ def reader(corpus_path):
     for D in dirs:
         dir_path = os.sep.join([corpus_path,D])
         dir_path, dirs, files = os.walk(dir_path).next()
-        
+        for f in files:
+            data_path = os.sep.join([dir_path, f])
+            raw_data = open(data_path).read()
+            xml_parse = ET.fromstring(raw_data)
+            get_text = lambda t: xml_parse.find(t).text
+
+            text = "\n\n".join([p.text for p in xml_parse.findall(".//p")])
+            title = get_text("title")
+            headline = get_text("headline")
+            byline = get_text("byline")
+            dateline = get_text("dateline")
+            lang = xml_parse.find("newsitem").attrib["xml:lang"]
+            
+            code_classes = [c.attrib["class"] 
+                                for c in xml_parse.findall(".//codes")]
+            codes = {cc: [c.attrib["code"] for c in 
+                            xml_parse.findall(".//codes[@class='%s']/code"%cc)]
+                        for cc in code_classes}
+            dcs = {d.attrib["element"]: d.attrib["value"] 
+                            for d in xml_parse.findall(".//dc")}
+            
+            #assemble output
+            output = {"text": text,
+                      "title": title,
+                      "headline": headline,
+                      "byline": byline,
+                      "dateline": dateline,
+                      "lang": lang,
+                      "corpus_path": corpus_path,
+                      "corpus_subdirectory": D,
+                      "corpus_filename": f,
+                      }
+
+            # merge and flatten the other big hashmaps
+            output.update(codes.items())
+            output.update(dcs.items())
+
+            yield output
+
+            
