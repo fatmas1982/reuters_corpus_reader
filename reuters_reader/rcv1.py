@@ -15,6 +15,7 @@ def reader(corpus_path):
         dir_path = os.sep.join([corpus_path,D])
         dir_path, dirs, files = os.walk(dir_path).next()
         for f in files:
+            print D,"/", f
             data_path = os.sep.join([dir_path, f])
             raw_data = open(data_path).read()
             xml_parse = ET.fromstring(raw_data)
@@ -29,7 +30,7 @@ def reader(corpus_path):
             headline = get_text("headline")
             byline = get_text("byline")
             dateline = get_text("dateline")
-            lang = xml_parse.find("newsitem").attrib["xml:lang"]
+            lang = xml_parse.attrib["xml:lang"]
             
             code_classes = [c.attrib["class"] 
                                 for c in xml_parse.findall(".//codes")]
