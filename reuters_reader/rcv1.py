@@ -17,7 +17,11 @@ def reader(corpus_path):
         for f in files:
             data_path = os.sep.join([dir_path, f])
             raw_data = open(data_path).read()
-            xml_parse = ET.fromstring(raw_data)
+            try:
+                xml_parse = ET.fromstring(raw_data)
+            except:
+                print D,"/",f,"failed to parse XML."
+                continue
 
             def get_text(tag): 
                 stuff = xml_parse.find(tag)
