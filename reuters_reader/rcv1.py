@@ -18,7 +18,11 @@ def reader(corpus_path):
             data_path = os.sep.join([dir_path, f])
             raw_data = open(data_path).read()
             xml_parse = ET.fromstring(raw_data)
-            get_text = lambda t: xml_parse.find(t).text
+
+            def get_text(tag): 
+                stuff = xml_parse.find(tag)
+                if stuff: return stuff.text
+                else: return None
 
             text = "\n\n".join([p.text for p in xml_parse.findall(".//p")])
             title = get_text("title")
