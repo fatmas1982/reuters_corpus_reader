@@ -7,5 +7,5 @@ respective submodule.
 Submodules
 * rcv1 - original corpus, XML, well-structured
 * [unwritten] rcv2 - multilingual corpus
-* TRC2 - data for TREC Blog task
+* [unwritten] TRC2 - data for TREC Blog task
 """
